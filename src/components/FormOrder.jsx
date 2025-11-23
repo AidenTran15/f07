@@ -4,10 +4,11 @@ import './FormOrder.css'
 function FormOrder() {
   const [formData, setFormData] = useState({
     // Thông tin liên hệ
-    contactMethod: '',
-    contactValue: '',
+    contactSMS: '',
+    contactInstagram: '',
+    contactZalo: '',
     
-    // Ngày giao hàng
+    // Ngày giờ giao hàng
     deliveryDay: '',
     deliveryMonth: '',
     deliveryYear: '',
@@ -19,12 +20,12 @@ function FormOrder() {
     occasionOther: '',
     
     // Loại hoa
-    flowerType: '',
+    flowerType: [],
     flowerTypeOther: '',
     
     // Thiết kế hoa
     flowerDesignCode: '',
-    flowerDesignMessage: '',
+    flowerMessage: '',
     
     // Thiết kế thiệp
     cardDesignCode: '',
@@ -32,7 +33,7 @@ function FormOrder() {
     
     // Thông tin giao hàng
     shippingAddress: '',
-    shippingPhone: '',
+    recipientPhone: '',
     recipientName: '',
     
     // Tư vấn
@@ -40,54 +41,92 @@ function FormOrder() {
   })
 
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+    const { name, value, type, checked } = e.target
+    
+    if (type === 'checkbox') {
+      if (name === 'flowerType') {
+        setFormData(prev => ({
+          ...prev,
+          flowerType: checked
+            ? [...prev.flowerType, value]
+            : prev.flowerType.filter(item => item !== value)
+        }))
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    // Ở đây bạn có thể gửi dữ liệu lên server
-    // Ví dụ: await fetch('/api/orders', { method: 'POST', body: JSON.stringify(formData) })
+    setIsSubmitting(true)
+
+    try {
+      // API Gateway endpoint
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://5vk7ifeqyd.execute-api.ap-southeast-2.amazonaws.com/prod'
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          createdAt: new Date().toISOString(),
+          id: crypto.randomUUID()
+        })
+      })
+
+      if (response.ok) {
+        setSubmitted(true)
+        // Reset form
+        setFormData({
+          contactSMS: '',
+          contactInstagram: '',
+          contactZalo: '',
+          deliveryDay: '',
+          deliveryMonth: '',
+          deliveryYear: '',
+          deliveryHour: '',
+          deliveryMinute: '',
+          occasion: '',
+          occasionOther: '',
+          flowerType: [],
+          flowerTypeOther: '',
+          flowerDesignCode: '',
+          flowerMessage: '',
+          cardDesignCode: '',
+          cardMessage: '',
+          shippingAddress: '',
+          recipientPhone: '',
+          recipientName: '',
+          needConsultation: ''
+        })
+      } else {
+        alert('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại!')
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      alert('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại!')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
     return (
       <div className="form-container">
         <div className="success-message">
-          <h2>✓ Yêu cầu đã được gửi!</h2>
-          <p>Cảm ơn bạn đã đặt hàng. Shop sẽ liên hệ với bạn sớm nhất có thể.</p>
-          <p className="note">Lưu ý: Đơn hàng đặt trước cần đặt cọc 50%.</p>
-          <button onClick={() => {
-            setSubmitted(false)
-            setFormData({
-              contactMethod: '',
-              contactValue: '',
-              deliveryDay: '',
-              deliveryMonth: '',
-              deliveryYear: '',
-              deliveryHour: '',
-              deliveryMinute: '',
-              occasion: '',
-              occasionOther: '',
-              flowerType: '',
-              flowerTypeOther: '',
-              flowerDesignCode: '',
-              flowerDesignMessage: '',
-              cardDesignCode: '',
-              cardMessage: '',
-              shippingAddress: '',
-              shippingPhone: '',
-              recipientName: '',
-              needConsultation: ''
-            })
-          }} className="btn-submit">
+          <h2>Đơn hàng đã được gửi thành công! 🎉</h2>
+          <p>Cảm ơn bạn đã đặt hàng. Chúng tôi đã nhận được yêu cầu của bạn và sẽ liên hệ với bạn sớm nhất có thể.</p>
+          <p className="deposit-note">Lưu ý: Đơn hàng đặt trước cần đặt cọc 50%.</p>
+          <button onClick={() => setSubmitted(false)} className="btn-primary">
             Đặt hàng mới
           </button>
         </div>
@@ -104,28 +143,33 @@ function FormOrder() {
         <section className="form-section">
           <h2>Thông tin liên hệ</h2>
           <div className="form-group">
-            <label>Phương thức liên hệ *</label>
-            <select 
-              name="contactMethod" 
-              value={formData.contactMethod}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Chọn phương thức</option>
-              <option value="sms">SMS</option>
-              <option value="instagram">Instagram</option>
-              <option value="zalo">Zalo</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Số điện thoại / Username *</label>
+            <label>SMS</label>
             <input
               type="text"
-              name="contactValue"
-              value={formData.contactValue}
+              name="contactSMS"
+              value={formData.contactSMS}
               onChange={handleChange}
-              placeholder="Nhập số điện thoại hoặc username"
-              required
+              placeholder="Nhập số điện thoại"
+            />
+          </div>
+          <div className="form-group">
+            <label>Instagram</label>
+            <input
+              type="text"
+              name="contactInstagram"
+              value={formData.contactInstagram}
+              onChange={handleChange}
+              placeholder="@username"
+            />
+          </div>
+          <div className="form-group">
+            <label>Zalo</label>
+            <input
+              type="text"
+              name="contactZalo"
+              value={formData.contactZalo}
+              onChange={handleChange}
+              placeholder="Số điện thoại Zalo"
             />
           </div>
         </section>
@@ -135,69 +179,62 @@ function FormOrder() {
           <h2>Ngày giờ giao hàng</h2>
           <div className="form-row">
             <div className="form-group">
-              <label>Ngày *</label>
+              <label>Ngày</label>
               <input
                 type="number"
                 name="deliveryDay"
                 value={formData.deliveryDay}
                 onChange={handleChange}
-                placeholder="DD"
                 min="1"
                 max="31"
-                required
+                placeholder="DD"
               />
             </div>
             <div className="form-group">
-              <label>Tháng *</label>
+              <label>Tháng</label>
               <input
                 type="number"
                 name="deliveryMonth"
                 value={formData.deliveryMonth}
                 onChange={handleChange}
-                placeholder="MM"
                 min="1"
                 max="12"
-                required
+                placeholder="MM"
               />
             </div>
             <div className="form-group">
-              <label>Năm *</label>
+              <label>Năm</label>
               <input
                 type="number"
                 name="deliveryYear"
                 value={formData.deliveryYear}
                 onChange={handleChange}
-                placeholder="YYYY"
                 min={new Date().getFullYear()}
-                required
+                placeholder="YYYY"
               />
             </div>
-          </div>
-          <div className="form-row">
             <div className="form-group">
-              <label>Giờ *</label>
+              <label>Giờ</label>
               <input
                 type="number"
                 name="deliveryHour"
                 value={formData.deliveryHour}
                 onChange={handleChange}
-                placeholder="HH"
                 min="0"
                 max="23"
-                required
+                placeholder="HH"
               />
             </div>
             <div className="form-group">
-              <label>Phút *</label>
+              <label>Phút</label>
               <input
                 type="number"
                 name="deliveryMinute"
                 value={formData.deliveryMinute}
                 onChange={handleChange}
-                placeholder="MM"
                 min="0"
                 max="59"
-                required
+                placeholder="MM"
               />
             </div>
           </div>
@@ -206,26 +243,22 @@ function FormOrder() {
         {/* Dịp */}
         <section className="form-section">
           <h2>Dịp</h2>
-          <div className="form-group">
-            <label>Chọn dịp *</label>
-            <select 
-              name="occasion" 
-              value={formData.occasion}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Chọn dịp</option>
-              <option value="birthday">Sinh nhật</option>
-              <option value="anniversary">Kỷ niệm</option>
-              <option value="thankyou">Cảm ơn</option>
-              <option value="grandopening">Khai trương</option>
-              <option value="apology">Xin lỗi</option>
-              <option value="other">Khác</option>
-            </select>
+          <div className="radio-group">
+            {['Sinh nhật', 'Kỷ niệm', 'Cảm ơn', 'Khai trương', 'Xin lỗi', 'Khác'].map(option => (
+              <label key={option} className="radio-label">
+                <input
+                  type="radio"
+                  name="occasion"
+                  value={option}
+                  checked={formData.occasion === option}
+                  onChange={handleChange}
+                />
+                {option}
+              </label>
+            ))}
           </div>
-          {formData.occasion === 'other' && (
+          {formData.occasion === 'Khác' && (
             <div className="form-group">
-              <label>Mô tả dịp khác</label>
               <input
                 type="text"
                 name="occasionOther"
@@ -239,29 +272,23 @@ function FormOrder() {
 
         {/* Loại hoa */}
         <section className="form-section">
-          <h2>Loại hoa</h2>
-          <div className="form-group">
-            <label>Chọn loại hoa *</label>
-            <select 
-              name="flowerType" 
-              value={formData.flowerType}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Chọn loại hoa</option>
-              <option value="rose">Hồng</option>
-              <option value="baby">Baby</option>
-              <option value="tulip">Tulip</option>
-              <option value="peony">Peony</option>
-              <option value="cuc-tana">Cúc tana</option>
-              <option value="orchid">Lan</option>
-              <option value="none">Không</option>
-              <option value="other">Khác</option>
-            </select>
+          <h2>Loại hoa yêu cầu</h2>
+          <div className="checkbox-group">
+            {['Hoa hồng', 'Baby', 'Tulip', 'Peony', 'Cúc tana', 'Lan', 'Không', 'Khác'].map(flower => (
+              <label key={flower} className="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="flowerType"
+                  value={flower}
+                  checked={formData.flowerType.includes(flower)}
+                  onChange={handleChange}
+                />
+                {flower}
+              </label>
+            ))}
           </div>
-          {formData.flowerType === 'other' && (
+          {formData.flowerType.includes('Khác') && (
             <div className="form-group">
-              <label>Mô tả loại hoa khác</label>
               <input
                 type="text"
                 name="flowerTypeOther"
@@ -277,23 +304,23 @@ function FormOrder() {
         <section className="form-section">
           <h2>Thiết kế hoa</h2>
           <div className="form-group">
-            <label>Mã thiết kế</label>
+            <label>Mã thiết kế hoa</label>
             <input
               type="text"
               name="flowerDesignCode"
               value={formData.flowerDesignCode}
               onChange={handleChange}
-              placeholder="Nhập mã thiết kế (nếu có)"
+              placeholder="Nhập mã thiết kế"
             />
           </div>
           <div className="form-group">
-            <label>Nội dung tin nhắn cho thiết kế hoa</label>
+            <label>Tin nhắn</label>
             <textarea
-              name="flowerDesignMessage"
-              value={formData.flowerDesignMessage}
+              name="flowerMessage"
+              value={formData.flowerMessage}
               onChange={handleChange}
-              placeholder="Nhập nội dung tin nhắn (nếu có)"
-              rows="4"
+              placeholder="Nhập tin nhắn cho thiết kế hoa"
+              rows="3"
             />
           </div>
         </section>
@@ -308,17 +335,17 @@ function FormOrder() {
               name="cardDesignCode"
               value={formData.cardDesignCode}
               onChange={handleChange}
-              placeholder="Nhập mã thiết kế thiệp (nếu có)"
+              placeholder="Nhập mã thiết kế"
             />
           </div>
           <div className="form-group">
-            <label>Nội dung tin nhắn cho thiệp</label>
+            <label>Nội dung</label>
             <textarea
               name="cardMessage"
               value={formData.cardMessage}
               onChange={handleChange}
-              placeholder="Nhập nội dung tin nhắn cho thiệp (nếu có)"
-              rows="4"
+              placeholder="Nhập nội dung thiệp"
+              rows="3"
             />
           </div>
         </section>
@@ -327,29 +354,29 @@ function FormOrder() {
         <section className="form-section">
           <h2>Thông tin giao hàng</h2>
           <div className="form-group">
-            <label>Địa chỉ giao hàng *</label>
+            <label>Địa chỉ giao hàng</label>
             <textarea
               name="shippingAddress"
               value={formData.shippingAddress}
               onChange={handleChange}
-              placeholder="Nhập địa chỉ giao hàng đầy đủ"
+              placeholder="Nhập địa chỉ đầy đủ"
               rows="3"
               required
             />
           </div>
           <div className="form-group">
-            <label>Số điện thoại người nhận *</label>
+            <label>Số điện thoại người nhận</label>
             <input
-              type="tel"
-              name="shippingPhone"
-              value={formData.shippingPhone}
+              type="text"
+              name="recipientPhone"
+              value={formData.recipientPhone}
               onChange={handleChange}
               placeholder="Nhập số điện thoại"
               required
             />
           </div>
           <div className="form-group">
-            <label>Tên người nhận *</label>
+            <label>Tên người nhận</label>
             <input
               type="text"
               name="recipientName"
@@ -369,29 +396,27 @@ function FormOrder() {
               <input
                 type="radio"
                 name="needConsultation"
-                value="yes"
-                checked={formData.needConsultation === 'yes'}
+                value="Có"
+                checked={formData.needConsultation === 'Có'}
                 onChange={handleChange}
-                required
               />
-              <span>Có</span>
+              Có
             </label>
             <label className="radio-label">
               <input
                 type="radio"
                 name="needConsultation"
-                value="no"
-                checked={formData.needConsultation === 'no'}
+                value="Không"
+                checked={formData.needConsultation === 'Không'}
                 onChange={handleChange}
-                required
               />
-              <span>Không</span>
+              Không
             </label>
           </div>
         </section>
 
-        <button type="submit" className="btn-submit">
-          Gửi
+        <button type="submit" className="btn-submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Đang gửi...' : 'Gửi'}
         </button>
       </form>
     </div>

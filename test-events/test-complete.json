@@ -1,0 +1,9 @@
+{
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json",
+    "Origin": "http://localhost:5173"
+  },
+  "body": "{\"contactSMS\":\"0901234567\",\"contactInstagram\":\"@testuser\",\"contactZalo\":\"0901234567\",\"deliveryDay\":\"15\",\"deliveryMonth\":\"12\",\"deliveryYear\":\"2024\",\"deliveryHour\":\"14\",\"deliveryMinute\":\"30\",\"occasion\":\"Sinh nhật\",\"occasionOther\":\"\",\"flowerType\":[\"Hoa hồng\",\"Baby\"],\"flowerTypeOther\":\"\",\"flowerDesignCode\":\"DESIGN-001\",\"flowerMessage\":\"Chúc mừng sinh nhật!\",\"cardDesignCode\":\"CARD-001\",\"cardMessage\":\"Happy Birthday!\",\"shippingAddress\":\"123 Đường ABC, Phường XYZ, Quận 1, TP.HCM\",\"recipientPhone\":\"0909876543\",\"recipientName\":\"Nguyễn Văn A\",\"needConsultation\":\"Có\"}"
+}
+

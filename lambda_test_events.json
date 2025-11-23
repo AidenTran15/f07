@@ -1,0 +1,69 @@
+{
+  "test-success-full": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Origin": "http://localhost:5173"
+    },
+    "body": "{\"contactSMS\":\"0901234567\",\"contactInstagram\":\"@testuser\",\"contactZalo\":\"0901234567\",\"deliveryDay\":\"15\",\"deliveryMonth\":\"12\",\"deliveryYear\":\"2024\",\"deliveryHour\":\"14\",\"deliveryMinute\":\"30\",\"occasion\":\"Sinh nhật\",\"occasionOther\":\"\",\"flowerType\":[\"Hoa hồng\",\"Baby\"],\"flowerTypeOther\":\"\",\"flowerDesignCode\":\"DESIGN-001\",\"flowerMessage\":\"Chúc mừng sinh nhật!\",\"cardDesignCode\":\"CARD-001\",\"cardMessage\":\"Happy Birthday!\",\"shippingAddress\":\"123 Đường ABC, Phường XYZ, Quận 1, TP.HCM\",\"recipientPhone\":\"0909876543\",\"recipientName\":\"Nguyễn Văn A\",\"needConsultation\":\"Có\"}"
+  },
+  "test-success-minimal": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"shippingAddress\":\"123 Test Street, District 1, Ho Chi Minh City\",\"recipientPhone\":\"0901234567\",\"recipientName\":\"Test User\"}"
+  },
+  "test-missing-required-fields": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"contactSMS\":\"0901234567\",\"occasion\":\"Sinh nhật\"}"
+  },
+  "test-options-cors": {
+    "httpMethod": "OPTIONS",
+    "headers": {
+      "Origin": "http://localhost:5173",
+      "Access-Control-Request-Method": "POST",
+      "Access-Control-Request-Headers": "Content-Type"
+    }
+  },
+  "test-invalid-json": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"invalid\": json syntax}"
+  },
+  "test-body-as-object": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "shippingAddress": "456 Test Avenue, District 2, Ho Chi Minh City",
+      "recipientPhone": "0907654321",
+      "recipientName": "Test User 2",
+      "contactSMS": "0907654321",
+      "occasion": "Kỷ niệm",
+      "flowerType": ["Tulip", "Peony"],
+      "needConsultation": "Không"
+    }
+  },
+  "test-occasion-other": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"shippingAddress\":\"789 Test Road, District 3, Ho Chi Minh City\",\"recipientPhone\":\"0901112223\",\"recipientName\":\"Test User 3\",\"occasion\":\"Khác\",\"occasionOther\":\"Tốt nghiệp\",\"flowerType\":[\"Lan\"],\"needConsultation\":\"Có\"}"
+  },
+  "test-flower-type-other": {
+    "httpMethod": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"shippingAddress\":\"321 Test Lane, District 4, Ho Chi Minh City\",\"recipientPhone\":\"0904445556\",\"recipientName\":\"Test User 4\",\"occasion\":\"Cảm ơn\",\"flowerType\":[\"Khác\"],\"flowerTypeOther\":\"Hoa hướng dương\",\"needConsultation\":\"Không\"}"
+  }
+}
+

@@ -146,12 +146,14 @@
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  background: linear-gradient(135deg, #ff6bb3, #ff4da6);
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255, 107, 179, 0.5);
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #ff6bb3 0%, #ff4da6 50%, #e91e63 100%);
+  border-radius: 2px;
+  box-shadow: 
+    0 0 12px rgba(255, 107, 179, 0.6),
+    0 2px 4px rgba(233, 30, 99, 0.3);
 }
 
 .form-group {

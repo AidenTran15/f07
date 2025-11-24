@@ -163,9 +163,6 @@ function AdminPage() {
             <div className="stat-value">{orders.length}</div>
           </div>
         </div>
-        <button onClick={fetchOrders} className="btn-refresh">
-          🔄 Làm mới
-        </button>
       </div>
 
       {orders.length === 0 ? (

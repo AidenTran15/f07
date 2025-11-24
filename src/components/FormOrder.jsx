@@ -125,12 +125,12 @@ function FormOrder() {
     return (
       <div className="form-container">
         <div className="success-message">
-          <h2>🎉 Đơn hàng đã được gửi thành công! 🎉</h2>
-          <p>Cảm ơn bạn đã đặt hàng tại F07! 💕</p>
+          <h2>Đơn hàng đã được gửi thành công</h2>
+          <p>Cảm ơn bạn đã đặt hàng tại F07</p>
           <p>Chúng tôi đã nhận được yêu cầu của bạn và sẽ liên hệ với bạn sớm nhất có thể.</p>
-          <p className="deposit-note">💳 Lưu ý: Đơn hàng đặt trước cần đặt cọc 50%</p>
+          <p className="deposit-note">Lưu ý: Đơn hàng đặt trước cần đặt cọc 50%</p>
           <button onClick={() => setSubmitted(false)} className="btn-primary">
-            🌸 Đặt hàng mới
+            Đặt hàng mới
           </button>
         </div>
       </div>
@@ -140,13 +140,13 @@ function FormOrder() {
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit} className="order-form">
-        <h1 className="form-title">🌸 Đặt Hoa F07 🌸</h1>
+        <h1 className="form-title">F07 Order Request</h1>
         
         {/* Thông tin liên hệ */}
         <section className="form-section">
-          <h2>📱 Thông tin liên hệ</h2>
-          <p style={{ marginBottom: '1rem', color: '#d63384', fontSize: '0.9rem' }}>
-            Vui lòng chọn 1 phương thức liên hệ
+          <h2>Thông tin liên hệ</h2>
+          <p style={{ marginBottom: '2rem', color: '#9f1853', fontSize: '0.875rem', letterSpacing: '0.5px', fontWeight: 300, fontFamily: 'Inter, sans-serif' }}>
+            Vui lòng chọn một phương thức liên hệ
           </p>
           <div className="radio-group">
             <label className={`radio-label ${formData.contactMethod === 'SMS' ? 'selected' : ''}`}>
@@ -163,7 +163,7 @@ function FormOrder() {
                   }))
                 }}
               />
-              <span>📱 SMS</span>
+              <span>SMS</span>
             </label>
             <label className={`radio-label ${formData.contactMethod === 'Instagram' ? 'selected' : ''}`}>
               <input
@@ -179,7 +179,7 @@ function FormOrder() {
                   }))
                 }}
               />
-              <span>📷 Instagram</span>
+              <span>Instagram</span>
             </label>
             <label className={`radio-label ${formData.contactMethod === 'Zalo' ? 'selected' : ''}`}>
               <input
@@ -195,7 +195,7 @@ function FormOrder() {
                   }))
                 }}
               />
-              <span>💬 Zalo</span>
+              <span>Zalo</span>
             </label>
           </div>
           {formData.contactMethod && (
@@ -222,10 +222,10 @@ function FormOrder() {
 
         {/* Ngày giờ giao hàng */}
         <section className="form-section">
-          <h2>📅 Ngày giờ giao hàng</h2>
+          <h2>Ngày giờ giao hàng</h2>
           <div className="datetime-picker-container">
             <div className="form-group">
-              <label>📆 Chọn ngày</label>
+              <label>Chọn ngày</label>
               <input
                 type="date"
                 name="deliveryDate"
@@ -236,7 +236,7 @@ function FormOrder() {
               />
             </div>
             <div className="form-group">
-              <label>🕐 Chọn giờ</label>
+              <label>Chọn giờ</label>
               <input
                 type="time"
                 name="deliveryTime"
@@ -248,7 +248,7 @@ function FormOrder() {
           </div>
           {formData.deliveryDate && formData.deliveryTime && (
             <div className="selected-datetime">
-              <span>✨ Đã chọn: </span>
+              <span>Đã chọn: </span>
               <strong>
                 {new Date(formData.deliveryDate).toLocaleDateString('vi-VN', {
                   weekday: 'long',
@@ -263,7 +263,7 @@ function FormOrder() {
 
         {/* Dịp */}
         <section className="form-section">
-          <h2>🎉 Dịp</h2>
+          <h2>Dịp</h2>
           <div className="radio-group">
             {['Sinh nhật', 'Kỷ niệm', 'Cảm ơn', 'Khai trương', 'Xin lỗi', 'Khác'].map(option => (
               <label key={option} className={`radio-label ${formData.occasion === option ? 'selected' : ''}`}>
@@ -293,7 +293,7 @@ function FormOrder() {
 
         {/* Loại hoa */}
         <section className="form-section">
-          <h2>🌹 Loại hoa yêu cầu</h2>
+          <h2>Loại hoa yêu cầu</h2>
           <div className="checkbox-group">
             {['Hoa hồng', 'Baby', 'Tulip', 'Peony', 'Cúc tana', 'Lan', 'Không', 'Khác'].map(flower => (
               <label key={flower} className={`checkbox-label ${formData.flowerType.includes(flower) ? 'selected' : ''}`}>
@@ -323,7 +323,7 @@ function FormOrder() {
 
         {/* Thiết kế hoa */}
         <section className="form-section">
-          <h2>🎨 Thiết kế hoa</h2>
+          <h2>Thiết kế hoa</h2>
           <div className="form-group">
             <label>Mã thiết kế hoa</label>
             <input
@@ -348,7 +348,7 @@ function FormOrder() {
 
         {/* Thiết kế thiệp */}
         <section className="form-section">
-          <h2>💌 Thiết kế thiệp</h2>
+          <h2>Thiết kế thiệp</h2>
           <div className="form-group">
             <label>Mã thiết kế thiệp</label>
             <input
@@ -373,7 +373,7 @@ function FormOrder() {
 
         {/* Thông tin giao hàng */}
         <section className="form-section">
-          <h2>🚚 Thông tin giao hàng</h2>
+          <h2>Thông tin giao hàng</h2>
           <div className="form-group">
             <label>Địa chỉ giao hàng</label>
             <textarea
@@ -411,7 +411,7 @@ function FormOrder() {
 
         {/* Tư vấn */}
         <section className="form-section">
-          <h2>💬 Bạn có cần tư vấn thêm không?</h2>
+          <h2>Bạn có cần tư vấn thêm không?</h2>
           <div className="radio-group">
             <label className={`radio-label ${formData.needConsultation === 'Có' ? 'selected' : ''}`}>
               <input
@@ -437,7 +437,7 @@ function FormOrder() {
         </section>
 
         <button type="submit" className="btn-submit" disabled={isSubmitting}>
-          {isSubmitting ? '⏳ Đang gửi...' : '✨ Gửi đơn hàng ✨'}
+          {isSubmitting ? 'Đang gửi...' : 'Gửi đơn hàng'}
         </button>
       </form>
     </div>

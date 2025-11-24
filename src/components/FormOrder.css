@@ -122,6 +122,64 @@
   gap: 1rem;
 }
 
+.datetime-picker-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.date-picker,
+.time-picker {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #ffd6e8;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+  cursor: pointer;
+}
+
+.date-picker:focus,
+.time-picker:focus {
+  outline: none;
+  border-color: #ff6bb3;
+  box-shadow: 0 0 0 4px rgba(255, 107, 179, 0.15);
+  background: #fff5f9;
+}
+
+.date-picker::-webkit-calendar-picker-indicator,
+.time-picker::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(300deg);
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.date-picker::-webkit-calendar-picker-indicator:hover,
+.time-picker::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.selected-datetime {
+  margin-top: 1rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #fff5f9 0%, #ffeef8 100%);
+  border: 2px solid #ffd6e8;
+  border-radius: 12px;
+  color: #d63384;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.selected-datetime strong {
+  color: #ff4da6;
+  font-weight: 600;
+}
+
 .radio-group,
 .checkbox-group {
   display: flex;
@@ -330,6 +388,10 @@
   }
 
   .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .datetime-picker-container {
     grid-template-columns: 1fr;
   }
 

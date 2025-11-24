@@ -8,11 +8,8 @@ function FormOrder() {
     contactValue: '', // Giá trị tương ứng
     
     // Ngày giờ giao hàng
-    deliveryDay: '',
-    deliveryMonth: '',
-    deliveryYear: '',
-    deliveryHour: '',
-    deliveryMinute: '',
+    deliveryDate: '', // Format: YYYY-MM-DD
+    deliveryTime: '', // Format: HH:MM
     
     // Dịp
     occasion: '',
@@ -81,6 +78,12 @@ function FormOrder() {
           contactSMS: formData.contactMethod === 'SMS' ? formData.contactValue : '',
           contactInstagram: formData.contactMethod === 'Instagram' ? formData.contactValue : '',
           contactZalo: formData.contactMethod === 'Zalo' ? formData.contactValue : '',
+          // Parse deliveryDate và deliveryTime về format cũ
+          deliveryDay: formData.deliveryDate ? new Date(formData.deliveryDate).getDate().toString() : '',
+          deliveryMonth: formData.deliveryDate ? (new Date(formData.deliveryDate).getMonth() + 1).toString() : '',
+          deliveryYear: formData.deliveryDate ? new Date(formData.deliveryDate).getFullYear().toString() : '',
+          deliveryHour: formData.deliveryTime ? formData.deliveryTime.split(':')[0] : '',
+          deliveryMinute: formData.deliveryTime ? formData.deliveryTime.split(':')[1] : '',
           createdAt: new Date().toISOString(),
           id: crypto.randomUUID()
         })
@@ -92,11 +95,8 @@ function FormOrder() {
         setFormData({
           contactMethod: '',
           contactValue: '',
-          deliveryDay: '',
-          deliveryMonth: '',
-          deliveryYear: '',
-          deliveryHour: '',
-          deliveryMinute: '',
+          deliveryDate: '',
+          deliveryTime: '',
           occasion: '',
           occasionOther: '',
           flowerType: [],
@@ -223,67 +223,42 @@ function FormOrder() {
         {/* Ngày giờ giao hàng */}
         <section className="form-section">
           <h2>📅 Ngày giờ giao hàng</h2>
-          <div className="form-row">
+          <div className="datetime-picker-container">
             <div className="form-group">
-              <label>Ngày</label>
+              <label>📆 Chọn ngày</label>
               <input
-                type="number"
-                name="deliveryDay"
-                value={formData.deliveryDay}
+                type="date"
+                name="deliveryDate"
+                value={formData.deliveryDate}
                 onChange={handleChange}
-                min="1"
-                max="31"
-                placeholder="DD"
+                min={new Date().toISOString().split('T')[0]}
+                className="date-picker"
               />
             </div>
             <div className="form-group">
-              <label>Tháng</label>
+              <label>🕐 Chọn giờ</label>
               <input
-                type="number"
-                name="deliveryMonth"
-                value={formData.deliveryMonth}
+                type="time"
+                name="deliveryTime"
+                value={formData.deliveryTime}
                 onChange={handleChange}
-                min="1"
-                max="12"
-                placeholder="MM"
-              />
-            </div>
-            <div className="form-group">
-              <label>Năm</label>
-              <input
-                type="number"
-                name="deliveryYear"
-                value={formData.deliveryYear}
-                onChange={handleChange}
-                min={new Date().getFullYear()}
-                placeholder="YYYY"
-              />
-            </div>
-            <div className="form-group">
-              <label>Giờ</label>
-              <input
-                type="number"
-                name="deliveryHour"
-                value={formData.deliveryHour}
-                onChange={handleChange}
-                min="0"
-                max="23"
-                placeholder="HH"
-              />
-            </div>
-            <div className="form-group">
-              <label>Phút</label>
-              <input
-                type="number"
-                name="deliveryMinute"
-                value={formData.deliveryMinute}
-                onChange={handleChange}
-                min="0"
-                max="59"
-                placeholder="MM"
+                className="time-picker"
               />
             </div>
           </div>
+          {formData.deliveryDate && formData.deliveryTime && (
+            <div className="selected-datetime">
+              <span>✨ Đã chọn: </span>
+              <strong>
+                {new Date(formData.deliveryDate).toLocaleDateString('vi-VN', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })} lúc {formData.deliveryTime}
+              </strong>
+            </div>
+          )}
         </section>
 
         {/* Dịp */}

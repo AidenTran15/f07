@@ -43,3 +43,10 @@ cat response.json | jq
 - **test-missing-fields.json**: Status 400, error về missing required fields
 - **test-options-cors.json**: Status 200, CORS headers được trả về
 
+## Test Events cho Update Order (Lambda: f07-update-order)
+
+- **test-update-order.json**: Status 200, order status được update thành "completed"
+- **test-update-confirm.json**: Status 200, order status được update thành "confirmed"
+
+**Lưu ý**: Thay `test-order-id-123` bằng order ID thực tế từ DynamoDB để test.
+

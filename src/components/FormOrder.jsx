@@ -19,14 +19,6 @@ function FormOrder() {
     flowerType: [],
     flowerTypeOther: '',
     
-    // Thiết kế hoa
-    flowerDesignCode: '',
-    flowerMessage: '',
-    
-    // Thiết kế thiệp
-    cardDesignCode: '',
-    cardMessage: '',
-    
     // Thông tin giao hàng
     shippingAddress: '',
     recipientPhone: '',
@@ -101,10 +93,6 @@ function FormOrder() {
           occasionOther: '',
           flowerType: [],
           flowerTypeOther: '',
-          flowerDesignCode: '',
-          flowerMessage: '',
-          cardDesignCode: '',
-          cardMessage: '',
           shippingAddress: '',
           recipientPhone: '',
           recipientName: '',
@@ -319,56 +307,6 @@ function FormOrder() {
               />
             </div>
           )}
-        </section>
-
-        {/* Thiết kế hoa */}
-        <section className="form-section">
-          <h2>Thiết kế hoa</h2>
-          <div className="form-group">
-            <label>Mã thiết kế hoa</label>
-            <input
-              type="text"
-              name="flowerDesignCode"
-              value={formData.flowerDesignCode}
-              onChange={handleChange}
-              placeholder="Nhập mã thiết kế"
-            />
-          </div>
-          <div className="form-group">
-            <label>Tin nhắn</label>
-            <textarea
-              name="flowerMessage"
-              value={formData.flowerMessage}
-              onChange={handleChange}
-              placeholder="Nhập tin nhắn cho thiết kế hoa"
-              rows="3"
-            />
-          </div>
-        </section>
-
-        {/* Thiết kế thiệp */}
-        <section className="form-section">
-          <h2>Thiết kế thiệp</h2>
-          <div className="form-group">
-            <label>Mã thiết kế thiệp</label>
-            <input
-              type="text"
-              name="cardDesignCode"
-              value={formData.cardDesignCode}
-              onChange={handleChange}
-              placeholder="Nhập mã thiết kế"
-            />
-          </div>
-          <div className="form-group">
-            <label>Nội dung</label>
-            <textarea
-              name="cardMessage"
-              value={formData.cardMessage}
-              onChange={handleChange}
-              placeholder="Nhập nội dung thiệp"
-              rows="3"
-            />
-          </div>
         </section>
 
         {/* Thông tin giao hàng */}

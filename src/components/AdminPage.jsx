@@ -7,8 +7,11 @@ function AdminPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedOrder, setSelectedOrder] = useState(null)
+  const [activeTab, setActiveTab] = useState('active') // 'active' or 'history'
+  const [updatingOrderId, setUpdatingOrderId] = useState(null)
 
   const apiUrl = import.meta.env.VITE_API_URL || 'https://a2es4ycii4.execute-api.ap-southeast-2.amazonaws.com/prod'
+  const updateApiUrl = import.meta.env.VITE_UPDATE_API_URL || 'https://qfv5hsw1qh.execute-api.ap-southeast-2.amazonaws.com/prod'
 
   useEffect(() => {
     fetchOrders()
@@ -130,6 +133,64 @@ function AdminPage() {
     }
   }
 
+  const updateOrderStatus = async (orderId, newStatus) => {
+    setUpdatingOrderId(orderId)
+    
+    try {
+      // API Gateway endpoint cho update order
+      const updateUrl = `${updateApiUrl}/${orderId}`
+      
+      const response = await fetch(updateUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: orderId,
+          status: newStatus
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId 
+            ? { ...order, status: newStatus, updatedAt: data.updatedAt }
+            : order
+        )
+      )
+      
+      // Refresh orders list
+      await fetchOrders()
+      
+      return data
+    } catch (err) {
+      console.error('Error updating order status:', err)
+      alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng. Vui lòng thử lại!')
+      throw err
+    } finally {
+      setUpdatingOrderId(null)
+    }
+  }
+
+  // Filter orders based on active tab
+  const filteredOrders = orders.filter(order => {
+    if (activeTab === 'active') {
+      return order.status !== 'completed' && order.status !== 'cancelled'
+    } else {
+      return order.status === 'completed' || order.status === 'cancelled'
+    }
+  })
+
+  const activeOrdersCount = orders.filter(o => o.status !== 'completed' && o.status !== 'cancelled').length
+  const historyOrdersCount = orders.filter(o => o.status === 'completed' || o.status === 'cancelled').length
+
   if (loading) {
     return (
       <div className="admin-container">
@@ -159,19 +220,43 @@ function AdminPage() {
             <div className="stat-value">{total}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Đang hiển thị</div>
-            <div className="stat-value">{orders.length}</div>
+            <div className="stat-label">Đơn đang xử lý</div>
+            <div className="stat-value">{activeOrdersCount}</div>
           </div>
+          <div className="stat-card">
+            <div className="stat-label">Lịch sử</div>
+            <div className="stat-value">{historyOrdersCount}</div>
+          </div>
+        </div>
+        
+        {/* Tabs */}
+        <div className="admin-tabs">
+          <button 
+            className={`tab-button ${activeTab === 'active' ? 'active' : ''}`}
+            onClick={() => setActiveTab('active')}
+          >
+            Đơn đang xử lý ({activeOrdersCount})
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'history' ? 'active' : ''}`}
+            onClick={() => setActiveTab('history')}
+          >
+            Lịch sử đơn hàng ({historyOrdersCount})
+          </button>
         </div>
       </div>
 
-      {orders.length === 0 ? (
+      {filteredOrders.length === 0 ? (
         <div className="empty-state">
-          <p>Chưa có đơn hàng nào</p>
+          <p>
+            {activeTab === 'active' 
+              ? 'Chưa có đơn hàng đang xử lý' 
+              : 'Chưa có đơn hàng trong lịch sử'}
+          </p>
         </div>
       ) : (
         <div className="orders-list">
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <div 
               key={order.id} 
               className="order-card"
@@ -232,6 +317,52 @@ function AdminPage() {
                   </div>
                 )}
               </div>
+              
+              {/* Action buttons - chỉ hiện cho đơn đang xử lý */}
+              {activeTab === 'active' && order.status !== 'completed' && order.status !== 'cancelled' && (
+                <div className="order-actions">
+                  {order.status === 'pending' && (
+                    <button
+                      className="btn-status btn-confirm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        updateOrderStatus(order.id, 'confirmed')
+                      }}
+                      disabled={updatingOrderId === order.id}
+                    >
+                      {updatingOrderId === order.id ? 'Đang cập nhật...' : 'Xác nhận'}
+                    </button>
+                  )}
+                  {(order.status === 'pending' || order.status === 'confirmed') && (
+                    <>
+                      <button
+                        className="btn-status btn-complete"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (window.confirm('Xác nhận hoàn thành đơn hàng này?')) {
+                            updateOrderStatus(order.id, 'completed')
+                          }
+                        }}
+                        disabled={updatingOrderId === order.id}
+                      >
+                        {updatingOrderId === order.id ? 'Đang cập nhật...' : 'Hoàn thành'}
+                      </button>
+                      <button
+                        className="btn-status btn-cancel"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (window.confirm('Xác nhận hủy đơn hàng này?')) {
+                            updateOrderStatus(order.id, 'cancelled')
+                          }
+                        }}
+                        disabled={updatingOrderId === order.id}
+                      >
+                        {updatingOrderId === order.id ? 'Đang cập nhật...' : 'Hủy'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

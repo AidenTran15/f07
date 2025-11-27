@@ -136,7 +136,7 @@ Lambda function cần quyền đọc DynamoDB:
 ### Bước 2: Test API Gateway
 
 ```bash
-curl https://a2es4ycii4.execute-api.ap-southeast-2.amazonaws.com/prod/orders
+curl https://a2es4ycii4.execute-api.ap-southeast-2.amazonaws.com/prod/
 ```
 
 Hoặc nếu endpoint là root:

@@ -1,0 +1,8 @@
+{
+  "httpMethod": "PUT",
+  "pathParameters": {
+    "id": "YOUR_ORDER_ID_HERE"
+  },
+  "body": "{\"id\": \"YOUR_ORDER_ID_HERE\", \"status\": \"confirmed\"}"
+}
+

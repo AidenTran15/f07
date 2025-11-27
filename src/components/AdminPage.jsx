@@ -324,9 +324,14 @@ function AdminPage() {
                   {order.status === 'pending' && (
                     <button
                       className="btn-status btn-confirm"
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.stopPropagation()
-                        updateOrderStatus(order.id, 'confirmed')
+                        try {
+                          await updateOrderStatus(order.id, 'confirmed')
+                        } catch (err) {
+                          // Error already handled in updateOrderStatus with alert
+                          console.error('Failed to update order status:', err)
+                        }
                       }}
                       disabled={updatingOrderId === order.id}
                     >
@@ -337,10 +342,15 @@ function AdminPage() {
                     <>
                       <button
                         className="btn-status btn-complete"
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.stopPropagation()
                           if (window.confirm('Xác nhận hoàn thành đơn hàng này?')) {
-                            updateOrderStatus(order.id, 'completed')
+                            try {
+                              await updateOrderStatus(order.id, 'completed')
+                            } catch (err) {
+                              // Error already handled in updateOrderStatus with alert
+                              console.error('Failed to update order status:', err)
+                            }
                           }
                         }}
                         disabled={updatingOrderId === order.id}
@@ -349,10 +359,15 @@ function AdminPage() {
                       </button>
                       <button
                         className="btn-status btn-cancel"
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.stopPropagation()
                           if (window.confirm('Xác nhận hủy đơn hàng này?')) {
-                            updateOrderStatus(order.id, 'cancelled')
+                            try {
+                              await updateOrderStatus(order.id, 'cancelled')
+                            } catch (err) {
+                              // Error already handled in updateOrderStatus with alert
+                              console.error('Failed to update order status:', err)
+                            }
                           }
                         }}
                         disabled={updatingOrderId === order.id}
@@ -464,22 +479,6 @@ function AdminPage() {
                 <div className="detail-section">
                   <h3>Loại hoa</h3>
                   <p>{selectedOrder.flowerType.join(', ')}{selectedOrder.flowerTypeOther ? ` - ${selectedOrder.flowerTypeOther}` : ''}</p>
-                </div>
-              )}
-
-              {selectedOrder.flowerDesignCode && (
-                <div className="detail-section">
-                  <h3>Thiết kế hoa</h3>
-                  <p><strong>Mã:</strong> {selectedOrder.flowerDesignCode}</p>
-                  {selectedOrder.flowerMessage && <p><strong>Tin nhắn:</strong> {selectedOrder.flowerMessage}</p>}
-                </div>
-              )}
-
-              {selectedOrder.cardDesignCode && (
-                <div className="detail-section">
-                  <h3>Thiết kế thiệp</h3>
-                  <p><strong>Mã:</strong> {selectedOrder.cardDesignCode}</p>
-                  {selectedOrder.cardMessage && <p><strong>Nội dung:</strong> {selectedOrder.cardMessage}</p>}
                 </div>
               )}
 
